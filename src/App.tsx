@@ -1,35 +1,71 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useClock, useTimer } from './hooks'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+export const App = () => {
+  const {
+    hours: clockHours,
+    minutes: clockMinutes,
+    seconds: clockSeconds,
+  } = useClock()
+  const {
+    hours: timerHours,
+    minutes: timerMinutes,
+    seconds: timerSeconds,
+    onStart,
+    onReset,
+    onStop,
+    isNegative,
+    onChangeHour,
+    onChangeMinute,
+    onChangeSecond,
+  } = useTimer()
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <main className="wrapper">
+      <div className="container">
+        <section>
+          <h1 className="title">Clock</h1>
+          <p className="timer">
+            {String(clockHours).padStart(2,'0')}:
+            {String(clockMinutes).padStart(2, '0')}:
+            {String(clockSeconds).padStart(2, '0')}
+          </p>
+        </section>
+        <section>
+          <h1 className="title">Timer</h1>
+          <p className={`timer ${isNegative ? 'negative': ''}`}>
+            {isNegative && '-'}
+            {String(timerHours).padStart(2,'0')}:
+            {String(timerMinutes).padStart(2, '0')}:
+            {String(timerSeconds).padStart(2, '0')}
+          </p>
+          <div className="columns-3">
+            <input
+              className="input"
+              type="number"
+              placeholder="Horas"
+              onChange={(e) => onChangeHour(parseInt(e.target.value || "0", 10))}
+            />
+            <input
+              className="input"
+              type="number"
+              placeholder="Minutos"
+              onChange={(e) => onChangeMinute(parseInt(e.target.value || "0", 10))}
+            />
+            <input
+              className="input"
+              type="number"
+              placeholder="Segundos"
+              onChange={(e) => onChangeSecond(parseInt(e.target.value || "0", 10))}
+            />
+          </div>
+          <div className="columns-3">
+            <button onClick={onStart} className="button">Iniciar</button>
+            <button onClick={onStop} className="button">Pausar</button>
+            <button onClick={onReset} className="button">Resetar</button>
+          </div>
+        </section>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </main>
   )
 }
-
-export default App
